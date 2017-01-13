@@ -490,8 +490,8 @@ lldp_same(lldp_neighbor_t *l, lldp_neighbor_t *r)
 	return (B_FALSE);
 }
 
-#define	LLDP_TLV_BIT(x)	((uint32_t)1 << (x))
-#define	LLDP_DUP_ALLOWED (LLDP_TLV_BIT(LLDP_TLV_MGMTADDR))
+#define	LLDP_TLV_BIT(x)		((uint32_t)1 << (x))
+#define	LLDP_DUP_ALLOWED	LLDP_TLV_BIT(LLDP_TLV_MGMTADDR)
 
 #define	SEEN(_seen, _tlv) ((_seen) & LLDP_TLV_BIT(_tlv))
 #define	ALLOW_DUP(_tlv)	((_tlv) & LLDP_DUP_ALLOWED)
@@ -605,7 +605,8 @@ lldp_process_frame(lldp_link_t *link)
 			link->rx_tlv_unknown++;
 		}
 
-		seen |= LLDP_TLV_BIT(type);
+		if (type != LLDP_TLV_ORG)
+			seen |= LLDP_TLV_BIT(type);
 
 		if (!ok) {
 			link->rx_tlv_discarded++;

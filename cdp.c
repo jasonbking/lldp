@@ -738,7 +738,7 @@ cdp_loop(void *data)
 
 		switch (pe.portev_source) {
 		case PORT_SOURCE_FD:
-			link = (cdp_link_t *)pe.portev_source;
+			link = (cdp_link_t *)pe.portev_user;
 			cdp_rx(link);
 			cdp_schedule(link);
 			continue;

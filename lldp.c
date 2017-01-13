@@ -1183,7 +1183,9 @@ lldp_dump_mgmtaddr(const lldp_mgmt_addr_t *addr)
 	char str[256];
 	int i;
 
-	(void) printf("%*s: %s\n", 26, "Interface type", "");
+	// lldp_mgmt_addr_substr(xx)
+	(void) printf("%*s: %s\n", 26, "Interface type",
+	    lldp_mgmt_addr_substr(addr->iftype));
 	(void) printf("%*s: %u\n", 26, "Interface number", addr->ifnum);
 	(void) printf("%*s: %s\n", 26, "Address type",
 	    iana_afstr(addr->addr_type));
@@ -1231,10 +1233,10 @@ lldp_dump_nb_text(lldp_link_t *link, const lldp_neighbor_t *nb)
 	if (nb->sysdesc != NULL)
 		(void) printf("    System description: %s\n", nb->sysdesc);
 	if (nb->cap != 0) {
-		lldp_cap_str(str, sizeof (str), nb->cap);
+		(void) lldp_cap_str(str, sizeof (str), nb->cap);
 		(void) printf("   System capabilities: %#hhx<%s>\n",
 		    nb->cap, str);
-		lldp_cap_str(str, sizeof (str), nb->en_cap);
+		(void) lldp_cap_str(str, sizeof (str), nb->en_cap);
 		(void) printf("  Enabled capabilities: %#hhx<%s>\n",
 		    nb->en_cap, str);
 	}

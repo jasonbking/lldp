@@ -92,29 +92,28 @@ lldp_tlv_str(lldp_tlv_t type)
 }
 
 size_t
-lldp_cap_str(char *buf, size_t len, uint16_t val)
+lldp_cap_str(char *buf, size_t buflen, uint16_t val)
 {
 	const char *p;
 	size_t bit;
-	boolean_t first;
+	boolean_t first = B_TRUE;
 
-	if (len == 0)
+	if (buflen == 0)
 		return (0);
 
 	buf[0] = '\0';
-	for (bit = 0, first = B_TRUE;
-	    bit < sizeof (capstr) / sizeof (char *);
-	    bit++) {
-		if (!(val & _BIT(bit)))
+	for (bit = 0; bit < ARRAY_SIZE(capstr); bit++) {
+		if (!(val & ((uint16_t)1 << bit)))
 			continue;
 
-		(void) strlcat(buf, capstr[bit], len);
 		if (!first)
-			(void) strlcat(buf, ",", len);
+			(void) strlcat(buf, ",", buflen);
+
+		(void) strlcat(buf, capstr[bit], buflen);
 		first = B_FALSE;
 	}
 
-	return (0);
+	return (strlen(buf));
 }
 
 size_t
@@ -229,6 +228,21 @@ lldp_port_substr(lldp_port_id_t type)
 		return ("locally assigned");
 	default:
 		return ("unknown");
+	}
+}
+
+const char *
+lldp_mgmt_addr_substr(lldp_mgmt_ifnum_t type)
+{
+	switch (type) {
+	case LLDP_MGMT_UNKNOWN:
+		return ("unknown");
+	case LLDP_MGMT_IFINDEX:
+		return ("ifIndex");
+	case LLDP_MGMT_SYSPORT:
+		return ("system port number");
+	default:
+		return ("unknown/invalid");
 	}
 }
 

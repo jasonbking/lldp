@@ -244,7 +244,7 @@ read_scf_proto_cfg(const char *proto, scf_cfg_t *cfg)
 
 	if (scf_handle_decode_fmri(handle, fmri, sc, svc, NULL, NULL, NULL,
 	    0) != 0) {
-		DMSG(D_OP, "%s: unable to decode fmri '%s': %s", fmri,
+		DMSG(D_OP, "%s: unable to decode fmri '%s': %s", proto, fmri,
 		    scf_strerror(scf_error()));
 		goto done;
 	}
@@ -376,7 +376,7 @@ dlpi_walk_cb(const char *name, void *arg)
 	if (rc != DLPI_SUCCESS) {
 		DMSG(D_NET, "dlpi_open(%s) failed: %s; skipping.",
 		    name, dlpi_strerror(rc));
-		return (B_TRUE);
+		return (B_FALSE);
 	}
 
 	rc = dlpi_info(dlh, &info, 0);
@@ -384,7 +384,7 @@ dlpi_walk_cb(const char *name, void *arg)
 		DMSG(D_NET, "dlpi_info(%s) failed: %s; skipping.",
 		    name, dlpi_strerror(rc));
 		dlpi_close(dlh);
-		return (B_TRUE);
+		return (B_FALSE);
 	}
 
 	keep = !!(info.di_mactype == DL_ETHER);
@@ -395,7 +395,7 @@ dlpi_walk_cb(const char *name, void *arg)
 	dlpi_close(dlh);
 
 	if (!keep)
-		return (B_TRUE);
+		return (B_FALSE);
 
 	VERIFY((link = link_alloc(name)) != NULL);
 	list_insert_tail(&links, (void *)link);
@@ -403,7 +403,7 @@ dlpi_walk_cb(const char *name, void *arg)
 	if ((len = strlen(name)) > link_max_len)
 		link_max_len = len;
 
-	return (B_TRUE);
+	return (B_FALSE);
 }
 
 static void
@@ -554,6 +554,15 @@ dprintf(const char *msg, ...)
 }
 
 static const char hdigits[] = "0123456789abcdef";
+
+/*
+ * Format a hardware address as a string.  Returns the length (excluding
+ * the NULL) of the string.  If the output buffer is too small, the
+ * output will be truncated, but the return will still show what the
+ * necessary size would be, e.g.
+ *     if (fmt_macaddr(buf, len, addr, addrlen) + 1 > len)
+ *        -- buffer is too small
+ */
 size_t
 fmt_macaddr(char *buf, size_t buflen, const uint8_t *addr, size_t addrlen)
 {
@@ -596,13 +605,15 @@ fmt_macaddr(char *buf, size_t buflen, const uint8_t *addr, size_t addrlen)
 			len++;
 		}
 
-		if (buf < end) {
+		if (buf + 2 >= end)
+			break;
+
+		if (buf + 2 <= end) {
 			*buf++ = hdigits[(val >> 4) & 0x0f];
 			*buf++ = hdigits[(val & 0x0f)];
 		}
 		len += 2;
 	}
-	*buf = NULL;
 
 	return (len);
 }

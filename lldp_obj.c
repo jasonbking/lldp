@@ -181,7 +181,7 @@ lldp_neighbor_free(lldp_neighbor_t *nb)
 	list_create(&nb->mgmt_addrs, sizeof (lldp_mgmt_addr_t),
 	    offsetof(lldp_mgmt_addr_t, list_node));
 
-	umem_cache_free(lldp_maddr_cache, maddr);
+	umem_cache_free(lldp_nb_cache, nb);
 }
 
 /*

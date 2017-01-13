@@ -1,7 +1,8 @@
 OBJS = lldd.o lldp.o cdp.o lldp_pdu.o list.o lldp_obj.o lldp_str.o lldp_timer.o
 SRCS = $(OBJS:%.o=%.c)
 
-CFLAGS = -xsb -g -mt
+CC = gcc
+CFLAGS = -g
 LDLIBS += -lscf -ldlpi -lsocket -lnsl -lumem
 
 BIN = lldd

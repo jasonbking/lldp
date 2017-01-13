@@ -213,6 +213,8 @@ size_t lldp_chassis_str(char *, size_t, lldp_chassis_id_t, const uint8_t *,
 const char *lldp_port_substr(lldp_port_id_t);
 size_t lldp_port_str(char *, size_t, lldp_port_id_t, const uint8_t *, size_t);
 
+const char *lldp_mgmt_addr_substr(lldp_mgmt_ifnum_t);
+
 #ifdef __cplusplus
 }
 #endif

@@ -159,6 +159,8 @@ size_t fmt_macaddr(char *, size_t, const uint8_t *, size_t);
 #define	DMSG(lvl, ...) if ((lvl) & dlevel) dprintf(__VA_ARGS__)
 #define	BOOLSTR(b) ((b) ? "B_TRUE" : "B_FALSE")
 
+#define	ARRAY_SIZE(x)	(sizeof (x) / sizeof(x[0]))
+
 #ifdef __cplusplus
 }
 #endif
