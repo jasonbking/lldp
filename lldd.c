@@ -10,7 +10,7 @@
  */
 
 /*
- * Copyright 2012 Jason King.  All rights reserved.
+ * Copyright 2017 Jason King.  All rights reserved.
  */
 #include <sys/types.h>
 #include <sys/debug.h>
